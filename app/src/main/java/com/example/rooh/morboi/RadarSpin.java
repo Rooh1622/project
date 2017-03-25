@@ -17,8 +17,12 @@ import android.view.View;
 public class RadarSpin extends View {
     private int BG_COLOR = Color.BLACK;
     private int UI_COLOR = Color.GREEN;
+
+    private int FPS = 60;
+    private int angleSpeed = 4;
     private Paint GreenOutline = new Paint();
     private Paint pRadius = new Paint();
+    private Paint pRadiusFull = new Paint();
     private Canvas c = null;
     private int w,h,r;
     private double angle = -90;
@@ -39,7 +43,12 @@ public class RadarSpin extends View {
         int[] colors = {Color.TRANSPARENT, UI_COLOR};
         float[] positions = {0, 0.25F};
         SweepGradient gradient = new SweepGradient(0, 0, colors , positions);
+
+        int[] fcolors = { BG_COLOR, Color.TRANSPARENT};
+        float[] fpositions = {0.25F, 1};
+        SweepGradient fgradient = new SweepGradient(0, 0, fcolors , fpositions);
         pRadius.setShader(gradient);
+        pRadiusFull.setShader(fgradient);
 
 
         new MyTimer().start();
@@ -115,7 +124,7 @@ public class RadarSpin extends View {
     public void drawR(int cx, int cy, int r){
 
         //r -= 120;
-        //double a = Math.toRadians(angle);
+        double a = Math.toRadians(angle);
        // c.drawText(Double.toString(angle),0,0,new Paint());
        // c.drawText(Double.toString(r * Math.cos(a)) + "--" + Double.toString(r * Math.cos(a)),0,100,new Paint());
 
@@ -124,12 +133,14 @@ public class RadarSpin extends View {
             angle = -90;
             c.drawText("-----------------",600,600,new Paint());
         }*/
-        angle+= 3;
+        angle+= angleSpeed;
         //c.save();
 
         //Example values
-        c.drawArc(rect, 0, 90, true, pRadius);
+        //c.drawArc(rect, 0, 90, true, pRadius);
+        c.drawArc(rect, 0, 360, true, pRadiusFull);
         //c.drawLine(0,0, (float)(r * Math.cos(a) - 0 * Math.sin(a)),(float)(0 * Math.cos(a) + r * Math.sin(a)),GreenOutline);
+        c.drawLine(0,0, r,0,GreenOutline);
 
     }
     @Override
@@ -140,7 +151,7 @@ public class RadarSpin extends View {
     class MyTimer extends CountDownTimer {
 
         public MyTimer() {
-            super(Integer.MAX_VALUE, 1000/60);
+            super(Integer.MAX_VALUE, 1000/FPS);
         }
 
         @Override
