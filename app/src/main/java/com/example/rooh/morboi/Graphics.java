@@ -41,7 +41,7 @@ public class Graphics extends View {
         h = c.getHeight();
 
         canvas.drawCircle(w/4,h/2,w/4,GreenOutline);
-        if(delay <= 0)
+        if(delay == 60)
             drawR(w/4,h/2,w/4);
     }
     public void drawR(int cx, int cy, int r){
@@ -52,16 +52,13 @@ public class Graphics extends View {
         c.drawText(Double.toString(angle),500,500,new Paint());
         c.drawText(Double.toString(r * Math.cos(a)) + "--" + Double.toString(r * Math.cos(a)),600,600,new Paint());
 
-        if(angle >= 267 && angle < 270 ) {
-            delay = 60;
+
+        /*if(angle >= 267 && angle < 270 ) {
+            delay = 0;
             angle = -90;
             c.drawText("-----------------",600,600,new Paint());
-        }
-        angle+= 3;
-        c.save();
-        c.translate(cx,cy);
-        c.drawLine(0,0, (float)(r * Math.cos(a) - 0 * Math.sin(a)),(float)(0 * Math.cos(a) + r * Math.sin(a)),GreenOutline);
-        c.restore();
+        }*/
+
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -78,7 +75,10 @@ public class Graphics extends View {
         public void onTick(long millisUntilFinished) {
 
             invalidate();
-            delay--;
+            if(delay <= 0)
+                delay = 60;
+            // else
+            //delay--;
         }
 
         @Override
@@ -87,11 +87,24 @@ public class Graphics extends View {
         }
     }
     private class Radius{
-        double degAngle;
-        int cx,cy,y;
+        double angle;
+        int cx,cy,r;
         int opacity = 255;
-        Radius(double degAngle){
-            this.degAngle = degAngle;
+        Radius(int cx,int cy,int r,double degAngle){
+            this.angle = degAngle;
+            this.cx = cx;
+            this.cy = cy;
+            this.r = r;
+        }
+        public void draw(){
+
+            double a = Math.toRadians(angle);
+
+            c.save();
+            c.translate(cx,cy);
+            c.drawLine(0,0, (float)(r * Math.cos(a) - 0 * Math.sin(a)),(float)(0 * Math.cos(a) + r * Math.sin(a)),GreenOutline);
+            c.restore();
+            angle++;
         }
     }
 }
